@@ -1,105 +1,76 @@
-# Hydra Package (.hpkg) System
+# HydraLogOS Linux Installer
 
-A custom Linux package format similar to .deb packages, providing a dpkg-like package management system.
+A powerful and secure Linux package management system with advanced encryption capabilities.
 
 ## Features
 
-- Custom package format (.hpkg)
-- dpkg-like command line interface
-- Dependency management
-- Package database tracking
-- Pre/post installation scripts
-- Colored terminal output
-- Package status tracking
+- Custom `.hpkg` package format
+- AES-256-CBC encryption for package security
+- SHA-256 hash verification
+- Package dependency management
+- Post-installation scripts support
+- Command-line interface for package management
+- Windows and Linux support
 
 ## Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/hydra-package-system.git
-cd hydra-package-system
+git clone https://github.com/Hexa08/hydraLogOS_Linux_Installer.git
+cd hydraLogOS_Linux_Installer
 
 # Make scripts executable
-chmod +x hpkg hpkg-install
-
-# Move to system directory (optional)
-sudo mv hpkg hpkg-install /usr/local/bin/
+chmod +x hpkg hpkg-install hpkg-encrypt build-package.sh
 ```
 
 ## Usage
 
+### Building Packages
 ```bash
-# Install a package
-sudo hpkg install package.hpkg
-
-# Remove a package
-sudo hpkg remove package-name
-
-# List installed packages
-hpkg list
-
-# Show package information
-hpkg info package-name
-
-# Show help
-hpkg help
+./build-package.sh
 ```
 
-## Package Structure
-
-```
-package.hpkg
-├── control/
-│   └── control.txt         # Package metadata
-├── data/
-│   └── usr/
-│       └── bin/           # Executables
-└── scripts/
-    ├── preinst.sh         # Pre-installation script
-    └── postinst.sh        # Post-installation script
-```
-
-## Creating Packages
-
-1. Create package structure:
+### Installing Packages
 ```bash
-mkdir -p mypackage/control
-mkdir -p mypackage/data/usr/bin
-mkdir -p mypackage/scripts
+sudo ./hpkg-install package.hpkg
 ```
 
-2. Add control file (control/control.txt):
-```
-Package: myapp
-Version: 1.0.0
-Architecture: amd64
-Maintainer: Your Name <your.email@example.com>
-Depends: python3, curl
-Description: My awesome application
-```
-
-3. Add your files to data/ directory
-
-4. Add installation scripts if needed
-
-5. Build package:
+### Managing Packages
 ```bash
-cd mypackage
-tar czf ../mypackage.hpkg *
+./hpkg list                    # List installed packages
+./hpkg info package-name       # Show package information
+./hpkg remove package-name     # Remove a package
 ```
 
-## Contributing
+### Encrypting Packages
+```bash
+# Windows
+.\encrypt-windows.ps1
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+# Linux
+./encrypt-all.sh
+```
+
+## Security Features
+
+- AES-256-CBC encryption
+- SHA-256 hash verification
+- Master key protection
+- File integrity checks
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Future Plans
+## Copyright
 
-- Package repository support
-- GUI installer
-- Package signature verification
-- Package update system
-- Cross-platform support 
+Copyright (c) 2025-2045 Hydra Package System. All rights reserved.
+See [COPYRIGHT](COPYRIGHT) file for details.
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request 
