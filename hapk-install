@@ -1,6 +1,13 @@
 #!/bin/bash
-
+#
 # Hydra Package Installer
+# Copyright (c) 2025-2045 Hydra Package System
+# All rights reserved.
+#
+# This file is part of the Hydra Package System.
+# See COPYRIGHT and LICENSE files for details.
+#
+
 # A custom package installer for .hpkg files
 
 set -e
@@ -19,11 +26,12 @@ fi
 
 # Check if package file is provided
 if [ -z "$1" ]; then
-    echo -e "${RED}Usage: $0 <package.hpkg>${NC}"
+    echo -e "${RED}Usage: $0 <package.hpkg> [decryption_key]${NC}"
     exit 1
 fi
 
 PACKAGE="$1"
+DECRYPT_KEY="$2"
 
 # Check if file exists
 if [ ! -f "$PACKAGE" ]; then
@@ -32,7 +40,7 @@ if [ ! -f "$PACKAGE" ]; then
 fi
 
 # Check file extension
-if [[ ! "$PACKAGE" =~ \.hpkg$ ]]; then
+if [[ ! "$PACKAGE" =~ \.hpkg$ ]] && [[ ! "$PACKAGE" =~ \.hpkg\.enc$ ]]; then
     echo -e "${RED}Error: Not a valid .hpkg package${NC}"
     exit 1
 fi
@@ -42,6 +50,18 @@ echo -e "${YELLOW}Installing package: $PACKAGE${NC}"
 # Create temporary directory
 TMPDIR=$(mktemp -d)
 trap 'rm -rf "$TMPDIR"' EXIT
+
+# Handle encrypted package
+if [[ "$PACKAGE" =~ \.enc$ ]]; then
+    if [ -z "$DECRYPT_KEY" ]; then
+        echo -e "${RED}Error: Decryption key required for encrypted package${NC}"
+        exit 1
+    fi
+    
+    echo "Decrypting package..."
+    ./hpkg-encrypt decrypt "$PACKAGE" "$TMPDIR/package.hpkg" "$DECRYPT_KEY"
+    PACKAGE="$TMPDIR/package.hpkg"
+fi
 
 # Extract package
 echo "Extracting package..."

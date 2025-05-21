@@ -4,9 +4,9 @@ echo "Running post-installation script..."
 echo "Creating necessary directories..."
 
 # Create application directory
-mkdir -p /opt/example-app
+mkdir -p /opt/flappi-app 
 
 # Set permissions
-chmod 755 /opt/example-app
+chmod 755 /opt/flappi-app
 
 echo "Post-installation completed successfully!" 

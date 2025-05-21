@@ -1,0 +1,46 @@
+# Hydra Package System - Copyright Notice
+
+## Copyright (c) 2025-2045 Hydra Package System
+
+All rights reserved.
+
+## License
+This software is licensed under the MIT License. See the LICENSE file for details.
+
+## Copyright Claims
+
+1. The Hydra Package System (.hpkg) format and its implementation are proprietary and copyrighted.
+2. The package management system, including but not limited to:
+   - Package format specification
+   - Installation scripts
+   - Package management tools
+   - Database structure
+   are protected by copyright law.
+
+## Permitted Uses
+
+1. Personal Use: You may use this software for personal projects.
+2. Commercial Use: You may use this software in commercial projects.
+3. Modification: You may modify the source code.
+4. Distribution: You may distribute the software.
+
+## Restrictions
+
+1. You must include the original copyright notice in all copies.
+2. You must include the MIT License in all copies.
+3. You may not claim this software as your own.
+4. You may not remove or alter the copyright notices.
+
+## Trademark Notice
+
+The name "Hydra Package System" and the .hpkg extension are trademarks of the Hydra Package System project.
+
+## Contact
+
+For copyright inquiries, please contact:
+- Email: your.email@example.com
+- GitHub: https://github.com/yourusername/hydra-package-system
+
+## Disclaimer
+
+This copyright notice is provided for informational purposes only and does not constitute legal advice. For legal advice, please consult with a qualified attorney. 

@@ -1,7 +1,14 @@
 #!/bin/bash
-
+#
 # Hydra Package Manager (hpkg)
-# A dpkg-like package manager for .hpkg packages
+# Copyright (c) 2025-2045 Hydra Package System
+# All rights reserved.
+#
+# This file is part of the Hydra Package System.
+# See COPYRIGHT and LICENSE files for details.
+#
+
+# A dpkg-like package manager for .hapk packages
 
 set -e
 
@@ -54,6 +61,15 @@ show_info() {
     fi
 }
 
+# Check package extension
+check_extension() {
+    local pkg="$1"
+    if [[ ! "$pkg" =~ \.hapk$ ]]; then
+        echo -e "${RED}Error: Package must have .hapk extension${NC}"
+        exit 1
+    fi
+}
+
 # Install package
 install_package() {
     check_root
@@ -62,6 +78,8 @@ install_package() {
         echo -e "${RED}Error: Package file required${NC}"
         exit 1
     fi
+
+    check_extension "$pkg"
 
     if [ ! -f "$pkg" ]; then
         echo -e "${RED}Error: Package file not found: $pkg${NC}"
@@ -111,7 +129,7 @@ show_help() {
     echo "Usage: hpkg [command] [options]"
     echo
     echo "Commands:"
-    echo "  install <package.hpkg>    Install a package"
+    echo "  install <package.hapk>    Install a package"
     echo "  remove <package>          Remove a package"
     echo "  list                      List installed packages"
     echo "  info <package>            Show package information"
