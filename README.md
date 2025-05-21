@@ -13,12 +13,14 @@ A powerful and secure Linux package management system with advanced encryption c
 ## Features
 
 - Custom `.hapk` package format
+- Automatic `.deb` to `.hapk` conversion
 - AES-256-CBC encryption for package security
 - SHA-256 hash verification
 - Package dependency management
 - Post-installation scripts support
 - Command-line interface for package management
 - Windows and Linux support
+- HydraLogOS compatibility check
 
 ## Installation
 
@@ -47,8 +49,11 @@ build-package.sh
 
 ### Installing Packages
 ```bash
-# Install a package
+# Install a .hapk package
 hapk-i package.hapk
+
+# Install a .deb package (automatically converts to .hapk)
+hapk-i package.deb
 
 # Remove a package
 hapk-rf package-name
@@ -75,6 +80,7 @@ encrypt-all.sh
 - SHA-256 hash verification
 - Master key protection
 - File integrity checks
+- OS compatibility verification
 
 ## License
 

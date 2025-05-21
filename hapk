@@ -19,6 +19,40 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+# Check if running on HydraLogOS
+check_os() {
+    if [ ! -f "/etc/hydralogos-release" ]; then
+        echo -e "${RED}Error: This package manager only works on HydraLogOS${NC}"
+        echo -e "${YELLOW}Please install HydraLogOS to use this package manager.${NC}"
+        exit 1
+    fi
+}
+
+# Convert .deb to .hapk
+convert_deb_to_hapk() {
+    local deb_file="$1"
+    local hapk_file="${deb_file%.deb}.hapk"
+    
+    echo -e "${YELLOW}Converting $deb_file to $hapk_file...${NC}"
+    
+    # Create temporary directory
+    local temp_dir=$(mktemp -d)
+    
+    # Extract .deb package
+    dpkg-deb -x "$deb_file" "$temp_dir"
+    
+    # Create .hapk package
+    cd "$temp_dir"
+    tar -czf "../$hapk_file" *
+    cd - > /dev/null
+    
+    # Clean up
+    rm -rf "$temp_dir"
+    
+    echo -e "${GREEN}Conversion complete: $hapk_file${NC}"
+    return "$hapk_file"
+}
+
 # Install to system path
 install_to_system() {
     echo -e "${YELLOW}Installing Hydra Package Manager to system...${NC}"
@@ -81,8 +115,8 @@ show_info() {
 # Check package extension
 check_extension() {
     local pkg="$1"
-    if [[ ! "$pkg" =~ \.hapk$ ]]; then
-        echo -e "${RED}Error: Package must have .hapk extension${NC}"
+    if [[ ! "$pkg" =~ \.(hapk|deb)$ ]]; then
+        echo -e "${RED}Error: Package must have .hapk or .deb extension${NC}"
         exit 1
     fi
 }
@@ -90,6 +124,7 @@ check_extension() {
 # Install package
 install_package() {
     check_root
+    check_os
     local pkg="$1"
     if [ -z "$pkg" ]; then
         echo -e "${RED}Error: Package file required${NC}"
@@ -103,6 +138,11 @@ install_package() {
         exit 1
     fi
 
+    # If .deb file, convert to .hapk first
+    if [[ "$pkg" =~ \.deb$ ]]; then
+        pkg=$(convert_deb_to_hapk "$pkg")
+    fi
+
     echo -e "${YELLOW}Installing $pkg...${NC}"
     hapk-install "$pkg"
 }
@@ -110,6 +150,7 @@ install_package() {
 # Remove package
 remove_package() {
     check_root
+    check_os
     local pkg="$1"
     if [ -z "$pkg" ]; then
         echo -e "${RED}Error: Package name required${NC}"
@@ -146,12 +187,12 @@ show_help() {
     echo "Usage: hapk [command] [options]"
     echo
     echo "Commands:"
-    echo "  hapk-i <package.hapk>    Install a package"
-    echo "  hapk-rf <package>        Remove a package"
-    echo "  hapk-ls                  List installed packages"
-    echo "  hapk-info <package>      Show package information"
-    echo "  hapk-help                Show this help message"
-    echo "  hapk-install             Install Hydra Package Manager to system"
+    echo "  hapk-i <package.hapk|package.deb>    Install a package"
+    echo "  hapk-rf <package>                    Remove a package"
+    echo "  hapk-ls                              List installed packages"
+    echo "  hapk-info <package>                  Show package information"
+    echo "  hapk-help                            Show this help message"
+    echo "  hapk-install                         Install Hydra Package Manager to system"
 }
 
 # Main command processing
