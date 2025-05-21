@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Hydra Package Manager (hpkg)
+# Hydra Package Manager (hapk)
 # Copyright (c) 2025-2045 Hydra Package System
 # All rights reserved.
 #
@@ -29,9 +29,9 @@ check_root() {
 
 # Initialize package database
 init_db() {
-    mkdir -p /var/lib/hpkg
-    touch /var/lib/hpkg/installed
-    touch /var/lib/hpkg/status
+    mkdir -p /var/lib/hapk
+    touch /var/lib/hapk/installed
+    touch /var/lib/hapk/status
 }
 
 # List installed packages
@@ -41,7 +41,7 @@ list_installed() {
         if [ ! -z "$line" ]; then
             echo "$line"
         fi
-    done < /var/lib/hpkg/installed
+    done < /var/lib/hapk/installed
 }
 
 # Show package info
@@ -52,9 +52,9 @@ show_info() {
         exit 1
     fi
 
-    if grep -q "^$pkg " /var/lib/hpkg/installed; then
+    if grep -q "^$pkg " /var/lib/hapk/installed; then
         echo -e "${BLUE}Package: $pkg${NC}"
-        grep "^$pkg " /var/lib/hpkg/installed
+        grep "^$pkg " /var/lib/hapk/installed
     else
         echo -e "${RED}Package not installed: $pkg${NC}"
         exit 1
@@ -87,7 +87,7 @@ install_package() {
     fi
 
     echo -e "${YELLOW}Installing $pkg...${NC}"
-    ./hpkg-install "$pkg"
+    hapk-install "$pkg"
 }
 
 # Remove package
@@ -99,7 +99,7 @@ remove_package() {
         exit 1
     fi
 
-    if ! grep -q "^$pkg " /var/lib/hpkg/installed; then
+    if ! grep -q "^$pkg " /var/lib/hapk/installed; then
         echo -e "${RED}Package not installed: $pkg${NC}"
         exit 1
     fi
@@ -107,50 +107,50 @@ remove_package() {
     echo -e "${YELLOW}Removing $pkg...${NC}"
     
     # Run pre-remove script if exists
-    if [ -f "/var/lib/hpkg/scripts/$pkg/prerm.sh" ]; then
-        bash "/var/lib/hpkg/scripts/$pkg/prerm.sh"
+    if [ -f "/var/lib/hapk/scripts/$pkg/prerm.sh" ]; then
+        bash "/var/lib/hapk/scripts/$pkg/prerm.sh"
     fi
 
     # Remove files
-    if [ -d "/var/lib/hpkg/data/$pkg" ]; then
-        rm -rf "/var/lib/hpkg/data/$pkg"
+    if [ -d "/var/lib/hapk/data/$pkg" ]; then
+        rm -rf "/var/lib/hapk/data/$pkg"
     fi
 
     # Remove from database
-    sed -i "/^$pkg /d" /var/lib/hpkg/installed
-    sed -i "/^$pkg /d" /var/lib/hpkg/status
+    sed -i "/^$pkg /d" /var/lib/hapk/installed
+    sed -i "/^$pkg /d" /var/lib/hapk/status
 
     echo -e "${GREEN}Package removed successfully${NC}"
 }
 
 # Show help
 show_help() {
-    echo -e "${BLUE}Hydra Package Manager (hpkg)${NC}"
-    echo "Usage: hpkg [command] [options]"
+    echo -e "${BLUE}Hydra Package Manager (hapk)${NC}"
+    echo "Usage: hapk [command] [options]"
     echo
     echo "Commands:"
-    echo "  install <package.hapk>    Install a package"
-    echo "  remove <package>          Remove a package"
-    echo "  list                      List installed packages"
-    echo "  info <package>            Show package information"
-    echo "  help                      Show this help message"
+    echo "  hapk-i <package.hapk>    Install a package"
+    echo "  hapk-rf <package>        Remove a package"
+    echo "  hapk-ls                  List installed packages"
+    echo "  hapk-info <package>      Show package information"
+    echo "  hapk-help                Show this help message"
 }
 
 # Main command processing
 case "$1" in
-    "install")
+    "hapk-i"|"-i")
         install_package "$2"
         ;;
-    "remove")
+    "hapk-rf"|"-rf")
         remove_package "$2"
         ;;
-    "list")
+    "hapk-ls"|"-ls")
         list_installed
         ;;
-    "info")
+    "hapk-info"|"-info")
         show_info "$2"
         ;;
-    "help"|"")
+    "hapk-help"|"-h"|"help"|"")
         show_help
         ;;
     *)

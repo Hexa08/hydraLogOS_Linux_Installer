@@ -39,28 +39,31 @@ chmod +x hapk hapk-install hapk-encrypt build-package.sh
 powershell -ExecutionPolicy Bypass -File build-package.ps1
 
 # On Linux
-./build-package.sh
+build-package.sh
 ```
 
 ### Installing Packages
 ```bash
-sudo ./hapk-install package.hapk
-```
+# Install a package
+hapk-i package.hapk
 
-### Managing Packages
-```bash
-./hapk list                    # List installed packages
-./hapk info package-name       # Show package information
-./hapk remove package-name     # Remove a package
+# Remove a package
+hapk-rf package-name
+
+# List installed packages
+hapk-ls
+
+# Show package information
+hapk-info package-name
 ```
 
 ### Encrypting Packages
 ```bash
 # Windows
-.\encrypt-windows.ps1
+encrypt-windows.ps1
 
 # Linux
-./encrypt-all.sh
+encrypt-all.sh
 ```
 
 ## Security Features
