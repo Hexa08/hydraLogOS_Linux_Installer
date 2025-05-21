@@ -1,0 +1,8 @@
+Package: example-app
+Version: 1.0.0
+Architecture: amd64
+Maintainer: Your Name <your.email@example.com>
+Depends: python3, curl
+Description: An example application packaged in .hpkg format
+ This is a sample package to demonstrate the .hpkg package format.
+ It shows how to structure and create packages for the Hydra Package System. 

@@ -1,0 +1,8 @@
+#!/usr/bin/env python3
+
+def main():
+    print("Hello from example-app!")
+    print("This is a sample application packaged in .hpkg format.")
+
+if __name__ == "__main__":
+    main() 

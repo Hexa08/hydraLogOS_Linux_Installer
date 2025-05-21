@@ -1,0 +1,19 @@
+# Ignore package files
+*.hpkg
+
+# Ignore temporary files
+*.tmp
+*.temp
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore build artifacts
+build/
+dist/
+
+# Ignore Python cache
+__pycache__/
+*.py[cod]
+*$py.class 
