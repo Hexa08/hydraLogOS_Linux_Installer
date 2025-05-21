@@ -29,6 +29,9 @@ cd hydraLogOS_Linux_Installer
 
 # Make scripts executable
 chmod +x hapk hapk-install hapk-encrypt build-package.sh
+
+# Install to system (Linux only)
+sudo ./hapk hapk-install
 ```
 
 ## Usage
