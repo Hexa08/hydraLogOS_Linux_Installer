@@ -19,8 +19,9 @@ A powerful and secure Linux package management system with advanced encryption c
 - Package dependency management
 - Post-installation scripts support
 - Command-line interface for package management
-- Windows and Linux support
+- Linux support
 - HydraLogOS compatibility check
+- Neofetch integration for package information display
 
 ## Installation
 
@@ -34,6 +35,10 @@ chmod +x hapk hapk-install hapk-encrypt build-package.sh
 
 # Install to system (Linux only)
 sudo ./hapk hapk-install
+
+# Configure neofetch for package information display
+mkdir -p ~/.config/neofetch
+cp neofetch-config ~/.config/neofetch/config.conf
 ```
 
 ## Usage

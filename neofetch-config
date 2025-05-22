@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Neofetch configuration for HydraLogOS
+# This file should be placed in ~/.config/neofetch/config.conf
+
+# Package information
+packages_sh="if [ -f /var/lib/hapk/pkg_count ]; then echo \"\$(cat /var/lib/hapk/pkg_count) (hapk)\"; else echo \"0 (hapk)\"; fi"
+
+# Display settings
+info "Packages" packages
+
+# Other neofetch settings
+print_info() {
+    info title
+    info underline
+
+    info "OS" distro
+    info "Host" model
+    info "Kernel" kernel
+    info "Uptime" uptime
+    info "Packages" packages
+    info "Shell" shell
+    info "Resolution" resolution
+    info "DE" de
+    info "WM" wm
+    info "WM Theme" wm_theme
+    info "Theme" theme
+    info "Icons" icons
+    info "Terminal" term
+    info "Terminal Font" term_font
+    info "CPU" cpu
+    info "GPU" gpu
+    info "Memory" memory
+
+    info cols
+} 
