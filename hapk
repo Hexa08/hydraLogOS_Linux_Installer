@@ -85,6 +85,15 @@ init_db() {
     touch /var/lib/hapk/status
 }
 
+# Get package info for neofetch
+get_neofetch_info() {
+    if [ -f "/var/lib/hapk/neofetch" ]; then
+        cat /var/lib/hapk/neofetch
+    else
+        echo "No packages installed"
+    fi
+}
+
 # List installed packages
 list_installed() {
     echo -e "${BLUE}Installed packages:${NC}"
@@ -145,6 +154,15 @@ install_package() {
 
     echo -e "${YELLOW}Installing $pkg...${NC}"
     hapk-install "$pkg"
+    
+    # Update package count
+    update_neofetch_info
+}
+
+# Update neofetch package info
+update_neofetch_info() {
+    local pkg_count=$(wc -l < /var/lib/hapk/installed)
+    echo "$pkg_count" > /var/lib/hapk/pkg_count
 }
 
 # Remove package
@@ -177,6 +195,9 @@ remove_package() {
     # Remove from database
     sed -i "/^$pkg /d" /var/lib/hapk/installed
     sed -i "/^$pkg /d" /var/lib/hapk/status
+    
+    # Update package count
+    update_neofetch_info
 
     echo -e "${GREEN}Package removed successfully${NC}"
 }
@@ -192,7 +213,6 @@ show_help() {
     echo "  hapk-ls                              List installed packages"
     echo "  hapk-info <package>                  Show package information"
     echo "  hapk-help                            Show this help message"
-    echo "  hapk-install                         Install Hydra Package Manager to system"
 }
 
 # Main command processing
@@ -209,7 +229,7 @@ case "$1" in
     "hapk-info"|"-info")
         show_info "$2"
         ;;
-    "hapk-install")
+    "hapk-i")
         install_to_system
         ;;
     "hapk-help"|"-h"|"help"|"")
