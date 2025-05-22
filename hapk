@@ -192,7 +192,6 @@ show_help() {
     echo "  hapk-ls                              List installed packages"
     echo "  hapk-info <package>                  Show package information"
     echo "  hapk-help                            Show this help message"
-    echo "  hapk-install                         Install Hydra Package Manager to system"
 }
 
 # Main command processing
