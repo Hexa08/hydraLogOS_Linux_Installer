@@ -1,109 +1,72 @@
-# HydraLogOS Linux Installer
+# Hydra Package Manager (hapk)
 
-A powerful and secure Linux package management system with advanced encryption capabilities.
-
-## ⚠️ Important Notice
-
-**This repository is private and proprietary.**
-- Forking is strictly prohibited
-- Unauthorized copying, modification, distribution, or use of this software is strictly prohibited
-- All rights are reserved by the copyright holder
-- Any unauthorized use will be subject to legal action
+A custom package manager for HydraLogOS that handles .hapk packages.
 
 ## Features
 
-- Custom `.hapk` package format
-- Automatic `.deb` to `.hapk` conversion
-- AES-256-CBC encryption for package security
-- SHA-256 hash verification
-- Package dependency management
-- Post-installation scripts support
-- Command-line interface for package management
-- Linux support
-- HydraLogOS compatibility check
-- Neofetch integration for package information display
+- Install .hapk packages
+- Remove installed packages
+- List installed packages
+- Show package information
+- Package database management
 
 ## Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/Hexa08/hydraLogOS_Linux_Installer.git
-cd hydraLogOS_Linux_Installer
+git clone https://github.com/yourusername/hapk.git
 
-# Make scripts executable
-chmod +x hapk hapk-install hapk-encrypt build-package.sh
-
-# Install to system (Linux only)
+# Install the package manager
+cd hapk
 sudo ./hapk hapk-install
-
-# Configure neofetch for package information display
-mkdir -p ~/.config/neofetch
-cp neofetch-config ~/.config/neofetch/config.conf
 ```
 
 ## Usage
 
-### Building Packages
 ```bash
-# On Windows
-powershell -ExecutionPolicy Bypass -File build-package.ps1
-
-# On Linux
-build-package.sh
-```
-
-### Installing Packages
-```bash
-# Install a .hapk package
-hapk-i package.hapk
-
-# Install a .deb package (automatically converts to .hapk)
-hapk-i package.deb
+# Install a package
+sudo hapk -i package.hapk
 
 # Remove a package
-hapk-rf package-name
+sudo hapk -rf package-name
 
 # List installed packages
-hapk-ls
+hapk -ls
 
 # Show package information
-hapk-info package-name
+hapk -info package-name
+
+# Show help
+hapk -h
 ```
 
-### Encrypting Packages
-```bash
-# Windows
-encrypt-windows.ps1
+## Package Structure
 
-# Linux
-encrypt-all.sh
+A .hapk package should have the following structure:
+
+```
+package.hapk/
+├── META-INF/
+│   ├── MANIFEST.MF
+│   └── postinst.sh (optional)
+└── assets/
+    └── (package files)
 ```
 
-## Security Features
+The MANIFEST.MF file should contain:
 
-- AES-256-CBC encryption
-- SHA-256 hash verification
-- Master key protection
-- File integrity checks
-- OS compatibility verification
+```
+Manifest-Version: 1.0
+Package-Name: package-name
+Version: 1.0
+Author: Your Name
+Description: Package description
+```
 
 ## License
 
-This project is proprietary software. All rights reserved.
-See [LICENSE](LICENSE) file for details.
+Copyright (c) 2025-2045 Hydra Package System
+All rights reserved.
 
-## Copyright
-
-Copyright (c) 2025-2045 Hydra Package System. All rights reserved.
-See [COPYRIGHT](COPYRIGHT) file for details.
-
-## Legal Notice
-
-1. This software is protected by copyright law
-2. Unauthorized copying, modification, distribution, or use is strictly prohibited
-3. Any attempt to fork, copy, or modify this repository without explicit permission will result in legal action
-4. For licensing inquiries, please contact the copyright holder
-
-## Contact
-
-For any inquiries regarding licensing or permissions, please contact the repository owner. 
+This project is part of the Hydra Package System.
+See COPYRIGHT and LICENSE files for details. 

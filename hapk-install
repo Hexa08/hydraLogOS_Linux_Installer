@@ -8,7 +8,7 @@
 # See COPYRIGHT and LICENSE files for details.
 #
 
-# A custom package installer for .hpkg files
+# A custom package installer for .hapk files
 
 set -e
 
@@ -20,105 +20,58 @@ NC='\033[0m' # No Color
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
-    echo -e "${RED}Error: Please run as root${NC}"
+    echo -e "${RED}Error: This operation requires root privileges${NC}"
     exit 1
 fi
 
-# Check if package file is provided
-if [ -z "$1" ]; then
-    echo -e "${RED}Usage: $0 <package.hpkg> [decryption_key]${NC}"
+# Check if package file exists
+if [ ! -f "$1" ]; then
+    echo -e "${RED}Error: Package file not found: $1${NC}"
     exit 1
 fi
 
-PACKAGE="$1"
-DECRYPT_KEY="$2"
+# Create temp directory
+TEMP_DIR=$(mktemp -d)
 
-# Check if file exists
-if [ ! -f "$PACKAGE" ]; then
-    echo -e "${RED}Error: Package file not found: $PACKAGE${NC}"
+# Extract .hapk file
+echo -e "${YELLOW}Extracting package...${NC}"
+unzip -q "$1" -d "$TEMP_DIR"
+
+# Check for manifest
+if [ ! -f "$TEMP_DIR/META-INF/MANIFEST.MF" ]; then
+    echo -e "${RED}Error: Invalid package - Missing MANIFEST.MF${NC}"
+    rm -rf "$TEMP_DIR"
     exit 1
 fi
 
-# Check file extension
-if [[ ! "$PACKAGE" =~ \.hpkg$ ]] && [[ ! "$PACKAGE" =~ \.hpkg\.enc$ ]]; then
-    echo -e "${RED}Error: Not a valid .hpkg package${NC}"
-    exit 1
+# Read package info from manifest
+PACKAGE_NAME=$(grep "Package-Name:" "$TEMP_DIR/META-INF/MANIFEST.MF" | cut -d' ' -f2)
+VERSION=$(grep "Version:" "$TEMP_DIR/META-INF/MANIFEST.MF" | cut -d' ' -f2)
+
+# Check if package is already installed
+if grep -q "^$PACKAGE_NAME " /var/lib/hapk/installed; then
+    echo -e "${YELLOW}Package $PACKAGE_NAME is already installed. Updating...${NC}"
+    # Remove old version
+    rm -rf "/var/lib/hapk/data/$PACKAGE_NAME"
 fi
 
-echo -e "${YELLOW}Installing package: $PACKAGE${NC}"
-
-# Create temporary directory
-TMPDIR=$(mktemp -d)
-trap 'rm -rf "$TMPDIR"' EXIT
-
-# Handle encrypted package
-if [[ "$PACKAGE" =~ \.enc$ ]]; then
-    if [ -z "$DECRYPT_KEY" ]; then
-        echo -e "${RED}Error: Decryption key required for encrypted package${NC}"
-        exit 1
-    fi
-    
-    echo "Decrypting package..."
-    ./hpkg-encrypt decrypt "$PACKAGE" "$TMPDIR/package.hpkg" "$DECRYPT_KEY"
-    PACKAGE="$TMPDIR/package.hpkg"
-fi
-
-# Extract package
-echo "Extracting package..."
-tar xzf "$PACKAGE" -C "$TMPDIR"
-
-# Check for control file
-if [ ! -f "$TMPDIR/control/control.txt" ]; then
-    echo -e "${RED}Error: Invalid package format - missing control file${NC}"
-    exit 1
-fi
-
-# Read package metadata
-PACKAGE_NAME=$(grep "^Package:" "$TMPDIR/control/control.txt" | cut -d':' -f2 | tr -d ' ')
-VERSION=$(grep "^Version:" "$TMPDIR/control/control.txt" | cut -d':' -f2 | tr -d ' ')
-ARCH=$(grep "^Architecture:" "$TMPDIR/control/control.txt" | cut -d':' -f2 | tr -d ' ')
-
-echo -e "${GREEN}Package: $PACKAGE_NAME${NC}"
-echo -e "${GREEN}Version: $VERSION${NC}"
-echo -e "${GREEN}Architecture: $ARCH${NC}"
-
-# Check dependencies
-if [ -f "$TMPDIR/control/control.txt" ]; then
-    DEPS=$(grep "^Depends:" "$TMPDIR/control/control.txt" | cut -d':' -f2 | tr -d ' ')
-    if [ ! -z "$DEPS" ]; then
-        echo "Checking dependencies..."
-        for dep in $DEPS; do
-            if ! dpkg -l | grep -q "^ii  $dep "; then
-                echo -e "${RED}Missing dependency: $dep${NC}"
-                exit 1
-            fi
-        done
-    fi
-fi
-
-# Create package directories
-mkdir -p "/var/lib/hpkg/data/$PACKAGE_NAME"
-mkdir -p "/var/lib/hpkg/scripts/$PACKAGE_NAME"
-
-# Run pre-install script if exists
-if [ -f "$TMPDIR/scripts/preinst.sh" ]; then
-    echo "Running pre-install script..."
-    bash "$TMPDIR/scripts/preinst.sh"
-fi
+# Create package directory
+mkdir -p "/var/lib/hapk/data/$PACKAGE_NAME"
 
 # Copy files
-echo "Installing files..."
-cp -r "$TMPDIR/data/"* /
-cp -r "$TMPDIR/scripts/"* "/var/lib/hpkg/scripts/$PACKAGE_NAME/"
+echo -e "${YELLOW}Installing files...${NC}"
+cp -r "$TEMP_DIR/assets"/* "/var/lib/hapk/data/$PACKAGE_NAME/"
 
 # Run post-install script if exists
-if [ -f "$TMPDIR/scripts/postinst.sh" ]; then
-    echo "Running post-install script..."
-    bash "$TMPDIR/scripts/postinst.sh"
+if [ -f "$TEMP_DIR/META-INF/postinst.sh" ]; then
+    echo -e "${YELLOW}Running post-install script...${NC}"
+    bash "$TEMP_DIR/META-INF/postinst.sh"
 fi
 
 # Update package database
-echo "$PACKAGE_NAME $VERSION $ARCH" >> /var/lib/hpkg/installed
-echo "$PACKAGE_NAME $VERSION $ARCH installed" >> /var/lib/hpkg/status
+echo "$PACKAGE_NAME $VERSION" >> /var/lib/hapk/installed
 
-echo -e "${GREEN}Package installed successfully!${NC}" 
+# Cleanup
+rm -rf "$TEMP_DIR"
+
+echo -e "${GREEN}Package $PACKAGE_NAME version $VERSION installed successfully${NC}" 

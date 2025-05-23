@@ -1,15 +1,23 @@
-# Ignore package files
-*.hpkg
-
-# Ignore temporary files
+# Temporary files
 *.tmp
 *.temp
+*.bak
 
-# Ignore system files
+# Package files
+*.hapk
+*.zip
+
+# System files
 .DS_Store
 Thumbs.db
 
-# Ignore build artifacts
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build files
 build/
 dist/
 
