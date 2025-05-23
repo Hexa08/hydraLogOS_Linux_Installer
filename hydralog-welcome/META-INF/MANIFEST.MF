@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Package-Name: hydralog-welcome
+Version: 1.0
+Author: HydraLogOS
+Description: Custom GDM Welcome Screen with multilingual greetings 
